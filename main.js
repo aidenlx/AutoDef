@@ -1,19 +1,23 @@
 const formatText = function(text)
 {
-  text=text.replace(/[.,?!+·"。，；？！—“”]/g,'');
-  text=text.replace(/[\n、()（）]|又?称为?|或者?|即/g,';');
+  const chs = RegExp(/[\u4e00-\u9fa5]/g);
+  text=text.split('\n').filter(e=>
+((e.match(/\b/g)||0).length||0)/2+((e.match(chs)||0).length||0)<8
+  ).join('\n');//去除长句
+  text=text.replace(/[.,?!+·"。，；？！—“”:：]/g,'');
+  text=text.replace(/[、()（）]|又?称为?|或者?|即/g,'\n');
   text=text.replace(/ {2,}/g,' ');
   text=text.replace(/ *- */g,'');
-  let group=text.split(';').filter(function(e){return e}); 
+  text.replace(/([A-Za-z]+)[( ]or ([A-Za-z]+) ([A-Za-z]+?(?=$))/gm,'$1 $3\n$2 $3;')
+  let group=text.split('\n').filter(e => e);//去除空值  
   group.forEach(function(text) {
    text = text.replace(/^ +| +$/g,'');
   });
-  group=Array.from(new Set(group));
-  const regex = RegExp('[^\x00-\xff]');
+  group=Array.from(new Set(group));//es6新特性数组去重
   group.sort(function(a,b)
   {
-    let at=regex.test(a);
-    let bt=regex.test(b);
+    let at=chs.test(a);
+    let bt=chs.test(b);
     if(at!=bt)
       return bt-at;
     else{
