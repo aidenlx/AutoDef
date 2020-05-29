@@ -17,6 +17,23 @@ const chsFisrt = function(a,b)
     return 0;
     }*/
   }
+//定位重叠元素的index（最长的除外）
+function locateOverlapped(arr0){   
+  result=[]
+  for(var i=0; i<arr0.length; i++){
+    for(var j=i+1; j<arr0.length; j++){
+    if (arr0[i]!==arr0[j])
+      {
+        if (arr0[i].indexOf(arr0[j])!==-1)
+          result.push(j);
+        else if(arr0[j].indexOf(arr0[i])!==-1)
+          result.push(i);        
+      }
+    }
+  }
+  return [...new Set(result)]
+}
+
 /* To Title Case © 2018 David Gouch | https://github.com/gouch/to-title-case */
 // eslint-disable-next-line no-extend-native
 String.prototype.toTitleCase = function () {
@@ -72,9 +89,9 @@ const getGroupedDef = function(text,isTitle)
     text=isTitle?text:text.split("\n").filter(e=>e.getWordCount()<defLimit).join("\n");//去除长句
     text=text.replace(/[.,?!+·"。，；？！—“”:：]/g,'');//处理常见标点
     text=text.replace(/[、()（）\/即指是为又称或者]+/g,'\n');//分词
-    //连字符处理
-    text=text.replace(/ {2,}/g,' ');
-    text=text.replace(/ *- */g,'');
+    text=text.replace(/ {2,}/g,' ');//多余空格处理
+    text=text.replace(/\B \B/g,'');//去除中文内空格
+    text=text.replace(/ *- */g,'');//连字符处理
     text=text.replace(/^ +| +$/gm,'');//去除开头与结尾的多余空格
     text.replace(/([A-Za-z]+)[( ]or ([A-Za-z]+) ([A-Za-z]+?(?=$))/gm,'$1 $3\n$2 $3;')
     return text.split(/[\n;]/g);//拆分行及原有的分词
@@ -89,9 +106,10 @@ const formatText = function(...groups)
   for (var g of groups) {
     group0=group0.concat(g);
   }
-  group0=Array.from(new Set(group0));//es6新特性数组去重
-  group0=group0.filter(e => e);//去除空值
-  group0.sort(chsFisrt);
+  group0=group0.filter(e => e).sort(chsFisrt);//去除空值并排序
+  group0=[...new Set(group0)]
+  var filtered=locateOverlapped(group0);
+  group0=group0.filter((e,index)=>!filtered.includes(index))
   return group0.join(';').toTitleCase();
 }
 
