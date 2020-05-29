@@ -6,13 +6,16 @@ const chsFisrt = function(a,b)
     let bt=chs.test(b);
     if(at!=bt)
       return bt-at;
-    else{
+    else
+      return 1;//保持同语言词间的相对顺序
+    /*
+    {
     if (a < b )
       return -1;
     if (a > b ) 
       return 1;
     return 0;
-    }
+    }*/
   }
 /* To Title Case © 2018 David Gouch | https://github.com/gouch/to-title-case */
 // eslint-disable-next-line no-extend-native
@@ -67,8 +70,9 @@ const getGroupedDef = function(text,isTitle)
   { 
     text=text.toLowerCase();
     text=isTitle?text:text.split("\n").filter(e=>e.getWordCount()<defLimit).join("\n");//去除长句
-    text=text.replace(/[.,?!+·"。，；？！—“”:：]/g,'');
-    text=text.replace(/[、()（）/]|又?称为?|或者?|即/g,'\n');
+    text=text.replace(/[.,?!+·"。，；？！—“”:：]/g,'');//处理常见标点
+    text=text.replace(/[、()（）\/即指是为又称或者]+/g,'\n');//分词
+    //连字符处理
     text=text.replace(/ {2,}/g,' ');
     text=text.replace(/ *- */g,'');
     text=text.replace(/^ +| +$/gm,'');//去除开头与结尾的多余空格
@@ -112,9 +116,9 @@ JSB.newAddon = function(mainPath){
       //NSNotificationCenter.defaultCenter().addObserverSelectorName(self,'onProcessExcerptChange:','ChangeExcerptRange');
       NSNotificationCenter.defaultCenter().addObserverSelectorName(self, 'onPopupMenuOnNote:', 'PopupMenuOnNote');
       self.autodef = NSUserDefaults.standardUserDefaults().objectForKey('marginnote_autodef');
-      self.switchtitle = NSUserDefaults.standardUserDefaults().objectForKey('marginnote.extension.switchtitle');
-      self.autotitle = NSUserDefaults.standardUserDefaults().objectForKey('marginnote.extension.autotitle');
-      self.autotitle_with_excerpt = NSUserDefaults.standardUserDefaults().objectForKey('marginnote.extension.autotitle_with_excerpt');
+      //self.switchtitle = NSUserDefaults.standardUserDefaults().objectForKey('marginnote.extension.switchtitle');
+      //self.autotitle = NSUserDefaults.standardUserDefaults().objectForKey('marginnote.extension.autotitle');
+      //self.autotitle_with_excerpt = NSUserDefaults.standardUserDefaults().objectForKey('marginnote.extension.autotitle_with_excerpt');
 
     },
     notebookWillClose: function(notebookid) {
