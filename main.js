@@ -88,7 +88,7 @@ const getGroupedDef = function(text,isTitle)
     text=text.toLowerCase();
     text=isTitle?text:text.split("\n").filter(e=>e.getWordCount()<defLimit).join("\n");//去除长句
     text=text.replace(/[.,?!+·"。，；？！—“”:：]/g,'');//处理常见标点
-    text=text.replace(/[、()（）\/即指是为又称或者]+/g,'\n');//分词
+    text=text.replace(/[、()（）\/]+|或者?|[简又]?称(之?为)?/g,'\n');//分词
     text=text.replace(/ {2,}/g,' ');//多余空格处理
     text=text.replace(/\B \B/g,'');//去除中文内空格
     text=text.replace(/ *- */g,'');//连字符处理
@@ -110,7 +110,7 @@ const formatText = function(...groups)
   group0=[...new Set(group0)]
   var filtered=locateOverlapped(group0);
   group0=group0.filter((e,index)=>!filtered.includes(index))
-  return group0.join(';').toTitleCase();
+  return group0.join(';')/*.toTitleCase()*/;//暂时关闭titlecase
 }
 
 
