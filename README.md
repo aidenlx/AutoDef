@@ -2,8 +2,8 @@
 
 获取已发布版本：[Releases](https://github.com/AidenLx/AutoDef/releases)
 
-- beta版功能较新，尚未获得签名，但可正常使用
-- alpha版处于测试阶段，请斟酌使用
+- unsigned版功能较新，尚未获得签名，但可正常使用
+- alpha版处于测试阶段，可能策略较激进，请斟酌使用
 
 🧐 [我该如何安装Marginnote插件？ ](https://bbs.marginnote.cn/t/topic/6246)
 
