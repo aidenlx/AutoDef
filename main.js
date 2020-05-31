@@ -17,20 +17,25 @@ const chsFisrt = function(a,b)
     return 0;
     }*/
   }
-//定位重叠元素的index（最长的除外）
-function locateOverlapped(arr0){   
+//定位重复（第一个除外）及重叠元素的index（最长的除外）
+function locateDuplicates(arr0){   
   result=[]
   for(var i=0; i<arr0.length; i++){
     for(var j=i+1; j<arr0.length; j++){
-    if (arr0[i]!==arr0[j])
-      {
-        if (arr0[i].indexOf(arr0[j])!==-1)
-          result.push(j);
-        else if(arr0[j].indexOf(arr0[i])!==-1)
-          result.push(i);        
-      }
+      var ei=arr0[i].toLowerCase();
+      var ej=arr0[j].toLowerCase();
+      if (ei==ej)
+        result.push(j);
+      else
+        {
+          if (ei.indexOf(ej)!==-1)
+            result.push(j);
+          else if(ej.indexOf(ei)!==-1)
+            result.push(i);        
+        }
     }
   }
+  console.log(result)
   return [...new Set(result)]
 }
 
@@ -44,6 +49,9 @@ String.prototype.toTitleCase = function () {
 
   return this.split(wordSeparators)
     .map(function (current, index, array) {
+      /*匹配类似fMRI的开头小写其他大写的专有名词*/
+      if(current.match(/^[a-z]+[A-Z]+$/))
+        return current;
       if (
         /* Check for small words */
         current.search(smallWords) > -1 &&
@@ -85,7 +93,6 @@ const getGroupedDef = function(text,isTitle)
 {
   if (text)
   { 
-    text=text.toLowerCase();
     text=isTitle?text:text.split("\n").filter(e=>e.getWordCount()<defLimit).join("\n");//去除长句
     text=text.replace(/[.,?!+·"。，；？！—“”:：]/g,'');//处理常见标点
     text=text.replace(/[、()（）\/]+|或者?|[简又]?称(之?为)?/g,'\n');//分词
@@ -107,10 +114,9 @@ const formatText = function(...groups)
     group0=group0.concat(g);
   }
   group0=group0.filter(e => e).sort(chsFisrt);//去除空值并排序
-  group0=[...new Set(group0)]
-  var filtered=locateOverlapped(group0);
+  var filtered=locateDuplicates(group0);//定位重复及重叠值
   group0=group0.filter((e,index)=>!filtered.includes(index))
-  return group0.join(';')/*.toTitleCase()*/;//暂时关闭titlecase
+  return group0.join(';').toTitleCase();
 }
 
 
