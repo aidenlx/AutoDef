@@ -45,10 +45,11 @@ String.prototype.toTitleCase = function () {
   'use strict'
   var smallWords = /^(a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|the|to|v.?|vs.?|via)$/i
   var alphanumericPattern = /([A-Za-z0-9\u00C0-\u00FF])/
-  var wordSeparators = /([ :–—-])/
 
-  return this.split(wordSeparators)
+  return this.split(/\b/g)
     .map(function (current, index, array) {
+      if(!current.match(/^[A-Za-z0-9\u00C0-\u00FF]+$/))
+        return current;
       /*匹配类似fMRI的开头小写其他大写的专有名词*/
       if(current.match(/^[a-z]+[A-Z]+$/))
         return current;
