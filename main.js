@@ -95,10 +95,9 @@ const getGroupedDef = function(text,isTitle)
   if (text)
   { 
     text=isTitle?text:text.split("\n").filter(e=>e.getWordCount()<defLimit).join("\n");//去除长句
-    text=text.replace(/[.,?!+·"。，；？！—“”:：]/g,'');//处理常见标点
-    text=text.replace(/[、()（）\/]+|或者?|[简又]?称(之?为)?/g,'\n');//分词
+    text=text.replace(/[.,?!+·"。，；？！—“”:：]|\B \B/g,'');//处理常见标点和去除中文内空格
+    text=text.replace(/[、()（）\/【】「」《》«»]+|或者?|[简又]?称(之?为)?/g,'\n');//分词
     text=text.replace(/ {2,}/g,' ');//多余空格处理
-    text=text.replace(/\B \B/g,'');//去除中文内空格
     text=text.replace(/ *- */g,'');//连字符处理
     text=text.replace(/^ +| +$/gm,'');//去除开头与结尾的多余空格
     text.replace(/([A-Za-z]+)[( ]or ([A-Za-z]+) ([A-Za-z]+?(?=$))/gm,'$1 $3\n$2 $3;')
