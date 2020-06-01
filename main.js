@@ -94,14 +94,19 @@ const getGroupedDef = function(text,isTitle)
 {
   if (text)
   { 
-    text=isTitle?text:text.split("\n").filter(e=>e.getWordCount()<defLimit).join("\n");//去除长句
-    text=text.replace(/[.,?!+·"。，；？！—“”:：]|\B \B/g,'');//处理常见标点和去除中文内空格
+    if (!isTitle)
+    {
+      text=text.split("\n").filter(e=>e.getWordCount()<defLimit).join("\n");//去除长句
+      text=text.replace('；','');//去除全角分号
+    }
+    text=text.replace(/[；;]/g,'\n');//统一条目分隔符
+    text=text.replace(/[.,?!+·"。，？！—“”:：]|\B \B/g,'');//处理常见标点和去除中文内空格
     text=text.replace(/[、()（）\/【】「」《》«»]+|或者?|[简又]?称(之?为)?/g,'\n');//分词
     text=text.replace(/ {2,}/g,' ');//多余空格处理
     text=text.replace(/ *- */g,'');//连字符处理
-    text=text.replace(/^ +| +$/gm,'');//去除开头与结尾的多余空格
+    text=text.replace(/^ +| +$|/gm,'');//去除条目开头与结尾的多余空格
     text.replace(/([A-Za-z]+)[( ]or ([A-Za-z]+) ([A-Za-z]+?(?=$))/gm,'$1 $3\n$2 $3;')
-    return text.split(/[\n;]/g);//拆分行及原有的分词
+    return text.split('\n');//拆分条目
   }
   else
     return null;
