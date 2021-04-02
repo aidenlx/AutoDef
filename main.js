@@ -4,18 +4,10 @@ const chsFisrt = function(a,b)
   {
     let at=chs.test(a);
     let bt=chs.test(b);
-    if(at!=bt)
-      return bt-at;
-    else
+    if(at===bt)
       return 1;//保持同语言词间的相对顺序
-    /*
-    {
-    if (a < b )
-      return -1;
-    if (a > b ) 
-      return 1;
-    return 0;
-    }*/
+    else
+      return bt - at;
   }
 //定位重复（第一个除外）及重叠元素的index（最长的除外）
 function locateDuplicates(arr0){   
@@ -86,10 +78,11 @@ String.prototype.toTitleCase = function () {
     })
     .join('')
 }
-String.prototype.getWordCount=function()
-{
-  return ((this.match(/\b/g)||0).length||0)/2+((this.match(chs)||0).length||0)
+String.prototype.getWordCount = function () {
+   return ((this.match(/\b/g)||'').length)/2+
+   ((this.match(chs)||'').length);
 }
+
 const getGroupedDef = function(text,isTitle)
 {
   if (text)
@@ -99,13 +92,18 @@ const getGroupedDef = function(text,isTitle)
       text=text.split("\n").filter(e=>e.getWordCount()<defLimit).join("\n");//去除长句
       text=text.replace('；','');//去除全角分号
     }
-    text=text.replace(/[；;]/g,'\n');//统一条目分隔符
-    text=text.replace(/[.,?!+·"。，？！—“”:：]|\B \B/g,'');//处理常见标点和去除中文内空格
-    text=text.replace(/[、()（）\/【】「」《》«»]+|或者?|[简又]?称(之?为)?/g,'\n');//分词
-    text=text.replace(/ {2,}/g,' ');//多余空格处理
-    text=text.replace(/ *- */g,'');//连字符处理
-    text=text.replace(/^ +| +$|/gm,'');//去除条目开头与结尾的多余空格
-    text.replace(/([A-Za-z]+)[( ]or ([A-Za-z]+) ([A-Za-z]+?(?=$))/gm,'$1 $3\n$2 $3;')
+    let rules=[
+      [/[；;]/g, '\n'],//统一条目分隔符
+      [/[.,?!+·"。，？！—“”:：]|\B \B/g, ''],//处理常见标点和去除中文内空格
+      [/[、()（）\/【】「」《》«»]+|或者?|[简又]?称(之?为)?/g, '\n'],//分词
+      [/ {2,}/g, ' '],//多余空格处理
+      [/ *- */g, ''],//连字符处理
+      [/^ +| +$|/gm, ''],//去除条目开头与结尾的多余空格
+      //[/([A-Za-z]+)[( ]or ([A-Za-z]+) ([A-Za-z]+?(?=$))/gm, '$1 $3\n$2 $3;']
+    ];
+    for (const [match,replace] of rules) {
+      text=text.replace(match,replace);
+    }
     return text.split('\n');//拆分条目
   }
   else
@@ -116,12 +114,12 @@ const formatText = function(...groups)
 {
   var group0=[];
   for (var g of groups) {
-    group0=group0.concat(g);
+    group0.push(...g);
   }
   group0=group0.filter(e => e).sort(chsFisrt);//去除空值并排序
   var filtered=locateDuplicates(group0);//定位重复及重叠值
   group0=group0.filter((e,index)=>!filtered.includes(index))
-  return group0.join(';').toTitleCase();
+  return group0.join('\n;').toTitleCase();
 }
 
 
