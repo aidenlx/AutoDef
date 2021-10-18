@@ -1,3 +1,5 @@
+**注意📢：此插件目前已停止更新，相关功能在[ourongxing的ohmymn插件](https://github.com/ourongxing/ohmymn)中已经包括，前往此处查看使用说明：https://busiyi.notion.site/AnotherAutoDef-13910b3b225743dcb72b29eabcc81e22**
+
 ## 安装说明
 
 获取已发布版本：[Releases](https://github.com/AidenLx/AutoDef/releases)
